@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Fundamentals Mastery | Core Engineering</title>
+    
+    <!-- Global and Local Styles -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../dsa-mastery/styles.css"> <!-- Reusing DSA CSS for layout consistency -->
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- GLOBAL TOP NAVIGATION -->
+    <nav class="global-nav">
+        <div class="nav-brand">Mastery<span style="color: var(--color-advanced)">OS</span></div>
+        <div class="nav-links">
+            <a href="../" class="portal-tab">System Design</a>
+            <a href="../dsa-mastery/" class="portal-tab">DSA Mastery</a>
+            <a href="#" class="portal-tab active">CS Fundamentals</a>
+        </div>
+    </nav>
+
+    <div class="dsa-layout">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar glass-card">
+            <div class="sidebar-header">
+                <h2>CS Modules</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+                    </div>
+                    <span id="progress-text">0 / 40 Core Topics</span>
+                </div>
+            </div>
+            
+            <div class="topic-list" id="topic-list">
+                <!-- Topics injected via JS -->
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            <div id="loading-spinner" class="spinner-container" style="display: none;">
+                <div class="spinner"></div>
+                <p>Decoding Architecture...</p>
+            </div>
+            
+            <div id="markdown-container" class="markdown-body glass-card">
+                <div style="text-align: center; padding: 60px 20px;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 16px;">CS Fundamentals Engine</h1>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                        Select a module from the sidebar. These modules are engineered specifically for elite-level LLD and system architecture rounds, focusing purely on engineering invariants over memorization.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Data and App Logic -->
+    <script src="../core/IntelligenceEngine.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Mistake Logging Modal -->
+    <div id="mistake-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass-card">
+            <h2 class="modal-title">Concept Mastery</h2>
+            <p class="modal-subtitle" style="margin-bottom: 24px; color: var(--text-secondary);">Before marking complete, analyze your understanding.</p>
+            
+            <div class="modal-section" style="margin-bottom: 24px;">
+                <h3 style="margin-bottom: 12px; font-size: 1.1rem;">1. Core Recognition</h3>
+                <label class="modal-checkbox">
+                    <input type="checkbox" id="modal-recognized-pattern">
+                    <span class="modal-chk-box"></span>
+                    I fully understand the underlying engineering invariant.
+                </label>
+            </div>
+
+            <div class="modal-section" style="margin-bottom: 32px;">
+                <h3 style="margin-bottom: 12px; font-size: 1.1rem;">2. Knowledge Gaps</h3>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="wrongIntuition">
+                        <span class="modal-chk-box"></span> Rote Memorization (I don't know *why* it works)
+                    </label>
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="wrongInvariant">
+                        <span class="modal-chk-box"></span> Misunderstood Tradeoffs (e.g. B-Tree vs LSM)
+                    </label>
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="communication">
+                        <span class="modal-chk-box"></span> Unable to explain clearly
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="display: flex; gap: 16px; justify-content: flex-end;">
+                <button id="modal-cancel" class="btn" style="background: transparent; border: 1px solid var(--border);">Cancel</button>
+                <button id="modal-save" class="btn" style="background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%); color: white; border: none;">Save & Complete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prism JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+</html>
