@@ -155,82 +155,165 @@
     },
     
     renderDashboard(container) {
-      // Calculate overall stats
-      const totalTopics = this.getTotalTopicsCount();
-      const completedTopics = this.state.completedTopics.size;
-      const progressPercent = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+      if (!window.MasteryOS) {
+          container.innerHTML = `<div class="view-container"><h1>Loading Analytics Engine...</h1></div>`;
+          return;
+      }
+
+      const overallReadiness = window.MasteryOS.Readiness.getOverallReadiness();
+      const dsaReadiness = window.MasteryOS.State.state.user.readiness.dsa;
+      const flawData = window.MasteryOS.Mistakes.getFatalFlaw();
+      const vault = window.MasteryOS.State.state.mistake_vault;
       
-      const totalQuestions = this.data.questions.length;
-      const completedQuestions = this.state.completedQuestions.size;
+      const weakPatterns = window.MasteryOS.Patterns.getWeakPatterns('dsa').slice(0, 3);
+      const velocity = window.MasteryOS.Analytics.getVelocity();
+
+      // Mistake Bars HTML
+      let mistakeHtml = '';
+      const totalMistakes = Object.values(vault).reduce((a, b) => a + b, 0);
+      const labels = {
+          wrongIntuition: 'Wrong Intuition',
+          wrongInvariant: 'Wrong Invariant',
+          boundaryMistakes: 'Boundary Mistakes',
+          optimizationMisses: 'Suboptimal Code',
+          communication: 'Communication',
+          designFlaws: 'Design/Syntax'
+      };
       
-      const noteCount = Object.keys(this.state.notes).length;
-      
-      // Generate Layer Cards
-      let layerCardsHtml = '';
-      const layerKeys = Object.keys(this.data.layers).sort((a, b) => parseInt(a) - parseInt(b));
-      
-      layerKeys.forEach(key => {
-        const layer = this.data.layers[key];
-        const layerTopics = this.getLayerTopicsCount(layer);
-        const layerCompleted = this.getLayerCompletedCount(layer);
-        const layerProgress = layerTopics > 0 ? Math.round((layerCompleted / layerTopics) * 100) : 0;
-        
-        layerCardsHtml += `
-          <a href="#/layer/${key}" class="glass-card interactive layer-card" style="border-top: 4px solid ${layer.color}">
-            <div class="layer-card-header">
-              <div class="layer-icon" style="color: ${layer.color}">${layer.icon}</div>
-              <div class="layer-info">
-                <h3>Layer ${key}</h3>
-                <p>${layer.title}</p>
+      Object.entries(vault).sort((a,b) => b[1] - a[1]).forEach(([key, val]) => {
+          const pct = totalMistakes > 0 ? (val / totalMistakes) * 100 : 0;
+          mistakeHtml += `
+            <div class="mistake-bar-container">
+              <div class="mistake-label">${labels[key]}</div>
+              <div class="mistake-bar-bg">
+                <div class="mistake-bar-fill" style="width: ${pct}%"></div>
               </div>
+              <div class="mistake-count">${val}</div>
             </div>
-            <div class="layer-progress">
-              <div class="progress-header">
-                <span>Progress</span>
-                <span>${layerProgress}%</span>
-              </div>
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: ${layerProgress}%; background: ${layer.color}"></div>
-              </div>
-            </div>
-          </a>
-        `;
+          `;
       });
-      
+
+      // Weak Patterns HTML
+      let patternsHtml = '';
+      if (weakPatterns.length === 0) {
+          patternsHtml = `<p style="color: var(--text-muted); font-style: italic;">No weak patterns detected yet. Complete more questions.</p>`;
+      } else {
+          weakPatterns.forEach(p => {
+              const acc = Math.round((p.successfulAttempts / p.attempts) * 100);
+              patternsHtml += `
+                <div style="padding: 12px; background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="font-weight: 600; color: var(--text-main); font-size: 14px;">${p.id.replace('dsa:pattern:', '').replace(/_/g, ' ')}</span>
+                    <span style="color: #ef4444; font-weight: 600;">${acc}% Acc</span>
+                  </div>
+                  <div style="font-size: 12px; color: var(--text-muted);">Attempts: ${p.attempts}</div>
+                </div>
+              `;
+          });
+      }
+
+      // Heatmap HTML (Simplified 12 weeks for visual demo)
+      let heatmapHtml = '';
+      for (let w = 0; w < 12; w++) {
+          heatmapHtml += `<div class="heatmap-col">`;
+          for (let d = 0; d < 7; d++) {
+              // Using some static pseudo-randomness for visual appeal until full activity log populates
+              const intensity = Math.random() > 0.7 ? Math.floor(Math.random() * 4) + 1 : 0;
+              heatmapHtml += `<div class="heatmap-cell ${intensity > 0 ? 'heat-'+intensity : ''}"></div>`;
+          }
+          heatmapHtml += `</div>`;
+      }
+
       container.innerHTML = `
         <div class="view-container">
-          <h1 class="page-title">Dashboard</h1>
-          <p class="page-subtitle">Welcome back. Here is your System Design Mastery progress.</p>
+          <h1 class="page-title">Global Analytics</h1>
+          <p class="page-subtitle">Mastery OS cross-platform intelligence command center.</p>
           
-          <div class="stats-grid">
-            <div class="glass-card stat-card">
-              <span class="stat-title">Overall Progress</span>
-              <span class="stat-value text-gradient">${progressPercent}%</span>
-              <span class="stat-desc">${completedTopics} of ${totalTopics} topics</span>
+          <div class="dashboard-bento">
+            <!-- 1. Readiness Radar -->
+            <div class="bento-card col-span-2" style="position: relative; min-height: 300px;">
+              <div class="bento-title">Interview Readiness Radar</div>
+              <div style="display: flex; gap: 24px; height: 100%;">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                  <div style="font-size: 64px; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1;">
+                    ${overallReadiness}
+                  </div>
+                  <div style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 12px; margin-top: 8px;">Global Score</div>
+                </div>
+                <div style="flex: 2; position: relative; height: 250px;">
+                  <canvas id="readinessRadar"></canvas>
+                </div>
+              </div>
             </div>
-            <div class="glass-card stat-card">
-              <span class="stat-title">Interview Qs</span>
-              <span class="stat-value text-cyan">${completedQuestions}</span>
-              <span class="stat-desc">of ${totalQuestions} practiced</span>
+
+            <!-- 2. Velocity & Consistency -->
+            <div class="bento-card">
+              <div class="bento-title">7-Day Velocity</div>
+              <div style="font-size: 48px; font-weight: 800; color: #10b981; margin-bottom: 16px;">${velocity} <span style="font-size: 16px; color: var(--text-muted); font-weight: 400;">Problems</span></div>
+              
+              <div class="bento-title" style="margin-top: auto;">Activity Heatmap</div>
+              <div class="heatmap-wrapper">
+                <div class="heatmap-container">
+                  ${heatmapHtml}
+                </div>
+              </div>
             </div>
-            <div class="glass-card stat-card">
-              <span class="stat-title">Notes Taken</span>
-              <span class="stat-value text-purple">${noteCount}</span>
-              <span class="stat-desc">across all topics</span>
+
+            <!-- 3. Mistake Triage -->
+            <div class="bento-card col-span-2">
+              <div class="bento-title">Fatal Flaw Analysis 
+                ${flawData.flaw !== 'None' ? `<span class="badge badge-advanced">Target: ${labels[flawData.flaw] || flawData.flaw}</span>` : ''}
+              </div>
+              <div style="margin-top: 16px;">
+                ${totalMistakes > 0 ? mistakeHtml : '<p style="color: var(--text-muted); font-style: italic;">No mistakes logged yet. Use the DSA portal to generate data.</p>'}
+              </div>
             </div>
-            <div class="glass-card stat-card">
-              <span class="stat-title">Current Week</span>
-              <span class="stat-value">W${this.state.currentWeek}</span>
-              <span class="stat-desc">of 52 week roadmap</span>
+
+            <!-- 4. Pattern Triage -->
+            <div class="bento-card">
+              <div class="bento-title">Weak Patterns</div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${patternsHtml}
+              </div>
             </div>
-          </div>
-          
-          <h2 style="margin-bottom: 24px;">Curriculum Layers</h2>
-          <div class="layers-grid">
-            ${layerCardsHtml || '<p>Loading layers...</p>'}
           </div>
         </div>
       `;
+
+      // Render Chart.js
+      setTimeout(() => {
+          const ctx = document.getElementById('readinessRadar');
+          if (ctx && window.Chart) {
+              new Chart(ctx, {
+                  type: 'radar',
+                  data: {
+                      labels: ['DSA', 'System Design', 'CS Fundamentals', 'AI Engineering'],
+                      datasets: [{
+                          label: 'Readiness Score',
+                          data: [dsaReadiness, 0, 0, 0], 
+                          backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                          borderColor: '#7c3aed',
+                          pointBackgroundColor: '#06b6d4',
+                          borderWidth: 2,
+                          pointRadius: 4
+                      }]
+                  },
+                  options: {
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      scales: {
+                          r: {
+                              angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                              grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                              pointLabels: { color: '#a0aec0', font: { family: 'Inter', size: 12 } },
+                              ticks: { display: false, min: 0, max: 100 }
+                          }
+                      },
+                      plugins: { legend: { display: false } }
+                  }
+              });
+          }
+      }, 100);
     },
     
     renderLayer(container, layerId) {

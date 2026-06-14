@@ -839,6 +839,115 @@ button, input, textarea {
 
 .portal-tab.active {
   color: #f8f9fa;
+  border-bottom-color: var(--accent-primary);
+}
+
+/* === BENTO DASHBOARD === */
+.dashboard-bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.bento-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bento-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.col-span-2 { grid-column: span 2; }
+.col-span-3 { grid-column: span 3; }
+
+@media (max-width: 900px) {
+  .dashboard-bento { grid-template-columns: 1fr; }
+  .col-span-2, .col-span-3 { grid-column: span 1; }
+}
+
+/* Heatmap */
+.heatmap-wrapper {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.heatmap-container {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.heatmap-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heatmap-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.2);
+  border: 1px solid white;
+}
+
+.heat-1 { background: rgba(16, 185, 129, 0.3); }
+.heat-2 { background: rgba(16, 185, 129, 0.6); }
+.heat-3 { background: rgba(16, 185, 129, 0.9); }
+.heat-4 { background: #34d399; box-shadow: 0 0 5px #34d399; }
+
+/* Mistake Bars */
+.mistake-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.mistake-label {
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+}
+
+.mistake-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.mistake-bar-fill {
+  height: 100%;
+  background: var(--color-advanced);
+  border-radius: 4px;
+}
+
+.mistake-count {
+  width: 30px;
+  text-align: right;
+  font-weight: 600;
 }
 
 .roadmap-card {
