@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Design Mastery</title>
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="The ultimate System Design Mastery System. Transform from 'Knows DSA' to 'Can design scalable systems'.">
+  <meta name="theme-color" content="#0a0a1a">
+  
+  <!-- Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Mermaid.js -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+</head>
+<body>
+  
+  <div id="app-container">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">🚀</span>
+          <span class="logo-text">System Design<br>Mastery</span>
+        </div>
+        <button id="mobile-menu-close" class="mobile-only">&times;</button>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li><a href="#/dashboard" class="nav-link" data-route="/dashboard"><span class="nav-icon">📊</span> Dashboard</a></li>
+          <li><a href="#/roadmap" class="nav-link" data-route="/roadmap"><span class="nav-icon">📅</span> Roadmap</a></li>
+          <li><a href="#/questions" class="nav-link" data-route="/questions"><span class="nav-icon">🎯</span> Interview Qs</a></li>
+          <li><a href="#/notes" class="nav-link" data-route="/notes"><span class="nav-icon">📝</span> Notes</a></li>
+        </ul>
+        
+        <h3 class="nav-heading">Curriculum Layers</h3>
+        <ul class="nav-list" id="sidebar-layers">
+          <!-- Populated by JS -->
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+          <li><div class="loading-pulse sidebar-pulse"></div></li>
+        </ul>
+        
+        <h3 class="nav-heading">System</h3>
+        <ul class="nav-list">
+          <li><a href="#/settings" class="nav-link" data-route="/settings"><span class="nav-icon">⚙️</span> Settings</a></li>
+        </ul>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="progress-mini-container">
+          <div class="progress-mini-header">
+            <span>Overall Progress</span>
+            <span id="sidebar-progress-text">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="sidebar-progress-bar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content">
+      <!-- Top Navigation -->
+      <header id="topbar">
+        <button id="mobile-menu-toggle" class="mobile-only">☰</button>
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-search" placeholder="Search topics, concepts, questions (e.g., Load Balancer, CAP Theorem)...">
+        </div>
+        <div class="topbar-actions">
+          <div id="readiness-badge" class="badge badge-readiness">L0</div>
+        </div>
+      </header>
+
+      <!-- App View Container -->
+      <div id="app">
+        <!-- Content will be injected here by app.js -->
+        <div class="loading-screen">
+          <div class="spinner"></div>
+          <p>Loading System Design Mastery...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal for Search Results -->
+  <div id="search-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Search Results</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="search-results-container">
+        <!-- Results injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container"></div>
+
+  <!-- Data Files -->
+  <script src="js/data-layers-1-4.js"></script>
+  <script src="js/data-layers-5-8.js"></script>
+  
+  <!-- Application Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>
