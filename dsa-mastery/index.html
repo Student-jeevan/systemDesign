@@ -95,7 +95,60 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
     
-    <!-- App Logic -->
+    <!-- Data and App Logic -->
+    <script src="../core/IntelligenceEngine.js"></script>
     <script src="app.js"></script>
+    <!-- Mistake Logging Modal -->
+    <div id="mistake-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass-card">
+            <h2 class="modal-title">Pattern Analysis</h2>
+            <p class="modal-subtitle" style="margin-bottom: 24px; color: var(--text-secondary);">Before marking complete, analyze your execution.</p>
+            
+            <div class="modal-section" style="margin-bottom: 24px;">
+                <h3 style="margin-bottom: 12px; font-size: 1.1rem;">1. Pattern Recognition</h3>
+                <label class="modal-checkbox">
+                    <input type="checkbox" id="modal-recognized-pattern">
+                    <span class="modal-chk-box"></span>
+                    I recognized the correct pattern instantly.
+                </label>
+            </div>
+
+            <div class="modal-section" style="margin-bottom: 32px;">
+                <h3 style="margin-bottom: 12px; font-size: 1.1rem;">2. Mistake Categorization</h3>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="wrongIntuition">
+                        <span class="modal-chk-box"></span> Wrong Intuition (Failed to identify approach)
+                    </label>
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="wrongInvariant">
+                        <span class="modal-chk-box"></span> Wrong Invariant (Broke core rule)
+                    </label>
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="boundaryMistakes">
+                        <span class="modal-chk-box"></span> Boundary Mistakes (Off-by-one, Null pointers)
+                    </label>
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="optimizationMisses">
+                        <span class="modal-chk-box"></span> Optimization Misses (Suboptimal complexity)
+                    </label>
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="communication">
+                        <span class="modal-chk-box"></span> Communication / Dry-run flaw
+                    </label>
+                    <label class="modal-checkbox">
+                        <input type="checkbox" class="mistake-tag" value="designFlaws">
+                        <span class="modal-chk-box"></span> Syntax / Code Design flaw
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="display: flex; gap: 16px; justify-content: flex-end;">
+                <button id="modal-cancel" class="btn" style="background: transparent; border: 1px solid var(--border);">Cancel</button>
+                <button id="modal-save" class="btn" style="background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%); color: white; border: none;">Save & Complete</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

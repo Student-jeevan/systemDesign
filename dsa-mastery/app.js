@@ -64,11 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return JSON.parse(localStorage.getItem('dsa-completed')) || [];
     }
 
-    function toggleQuestionCompletion(id) {
+    function toggleQuestionCompletion(id, forceComplete = false) {
         let completed = getCompletedQuestions();
-        if (completed.includes(id)) {
+        if (!forceComplete && completed.includes(id)) {
             completed = completed.filter(q => q !== id);
-        } else {
+        } else if (!completed.includes(id)) {
             completed.push(id);
         }
         localStorage.setItem('dsa-completed', JSON.stringify(completed));
@@ -264,10 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const qId = q.link ? btoa(q.link).replace(/=/g, '') : q.id; // stable ID based on URL
                     
+                    const patternId = 'dsa:pattern:' + pattern.title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                    
                     html += `<div class="question-card">
                                 <div class="question-header">
                                     <label class="question-checkbox">
-                                        <input type="checkbox" data-id="${qId}">
+                                        <input type="checkbox" data-id="${qId}" data-pattern="${patternId}">
                                         <span class="checkmark"></span>
                                     </label>
                                     <div class="question-title-wrapper">
@@ -295,10 +297,16 @@ document.addEventListener('DOMContentLoaded', () => {
         markdownContainer.innerHTML = html;
         Prism.highlightAllUnder(markdownContainer);
         
-        // Attach Event Listeners to new DOM elements
+        // Attach Event Listeners
         document.querySelectorAll('.question-checkbox input').forEach(cb => {
-            cb.addEventListener('change', (e) => {
-                toggleQuestionCompletion(e.target.dataset.id);
+            cb.addEventListener('click', (e) => {
+                const isChecked = e.target.checked;
+                if (isChecked) {
+                    e.preventDefault(); // Stop instant check
+                    openMistakeModal(e.target.dataset.id, e.target.dataset.pattern);
+                } else {
+                    toggleQuestionCompletion(e.target.dataset.id);
+                }
             });
         });
 
@@ -318,6 +326,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateProgressUI();
     }
+
+    // === Mistake Modal Logic ===
+    const mistakeModal = document.getElementById('mistake-modal');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalSave = document.getElementById('modal-save');
+    const modalRecognized = document.getElementById('modal-recognized-pattern');
+    
+    let pendingQuestionId = null;
+    let pendingPatternId = null;
+
+    function openMistakeModal(qId, patternId) {
+        pendingQuestionId = qId;
+        pendingPatternId = patternId;
+        
+        // Reset modal state
+        modalRecognized.checked = false;
+        document.querySelectorAll('.mistake-tag').forEach(cb => cb.checked = false);
+        
+        mistakeModal.style.display = 'flex';
+    }
+
+    modalCancel.addEventListener('click', () => {
+        mistakeModal.style.display = 'none';
+        pendingQuestionId = null;
+        pendingPatternId = null;
+    });
+
+    modalSave.addEventListener('click', () => {
+        if (!pendingQuestionId) return;
+
+        const recognized = modalRecognized.checked;
+        const selectedMistakes = Array.from(document.querySelectorAll('.mistake-tag'))
+                                     .filter(cb => cb.checked)
+                                     .map(cb => cb.value);
+
+        // Feed data to MasteryOS
+        if (window.MasteryOS) {
+            window.MasteryOS.Patterns.logAttempt(pendingPatternId, recognized);
+            if (selectedMistakes.length > 0) {
+                window.MasteryOS.Mistakes.logMistakes(pendingQuestionId, selectedMistakes);
+            }
+            window.MasteryOS.Readiness.calculateReadiness('dsa');
+        }
+
+        // Complete the question in UI
+        toggleQuestionCompletion(pendingQuestionId, true);
+        
+        mistakeModal.style.display = 'none';
+        pendingQuestionId = null;
+        pendingPatternId = null;
+    });
 
     // === Load Content ===
     async function loadTopicContent(filename) {
